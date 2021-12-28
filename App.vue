@@ -16,9 +16,9 @@ v-model="name"
     <select v-model="genre">
 
       <option value="none">none</option>
-            <option value="com">com</option>
-            <option value="hor">hor</option>
-            <option value="dr">dr</option>
+            <option value="comedy">com</option>
+            <option value="horror">hor</option>
+            <option value="drama">dr</option>
         </select>
      <label for="about">About</label>
     <input type="text" v-model="about" placholder="write about">
@@ -60,11 +60,8 @@ v-model="name"
     </tbody>
     
 </table>
-<label>Filter by name</label>
-  <input type="text" v-model="search" placeholder="search name..."/>
-  <label>Filter by genre</label>
-<input v-model="selected" placeholder="filter by genre"/>
- 
+<label>Filter by name or genre</label>
+  <input type="text" v-model="search" placeholder="search name or genre"/>
 
 
 
@@ -99,8 +96,12 @@ item: { name: this.name, genre: this.genre, year: this.year, about: this.about, 
   computed: {
     items() {
      
-      let filter = new RegExp(this.search, 'i')
-      return this.items.filter(item => item.name.match(filter))
+       return this.items.filter((item) => {
+        
+        return item.genre.toLowerCase().indexOf(this.search.toLowerCase()) >= 0 
+        || 
+         item.name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0
+        });
       
     }
   },
@@ -120,7 +121,10 @@ item: { name: this.name, genre: this.genre, year: this.year, about: this.about, 
      })
 
     this.name = '';
-    this.year = null
+     genre: this.genre,
+       year: this.year,
+       about: this.about,
+       time: this.time
     },
   sortHighest() {
       this.items.sort((a, b) => a.item < b.item ? 1 : -1);
