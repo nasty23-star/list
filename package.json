@@ -1,25 +1,39 @@
 {
-  "name": "movie_todo",
-  "version": "0.1.0",
-  "private": true,
+  "author": {
+    "name": "Joyent",
+    "url": "http://www.joyent.com"
+  },
+  "name": "util",
+  "description": "Node.JS util module",
+  "keywords": [
+    "util"
+  ],
+  "version": "0.11.1",
+  "homepage": "https://github.com/defunctzombie/node-util",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/defunctzombie/node-util"
+  },
+  "main": "./util.js",
+  "files": [
+    "util.js",
+    "support"
+  ],
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "test": "node test/node/index.js",
+    "test:browsers": "airtap test/browser/index.js"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "inherits": "2.0.3"
   },
+  "license": "MIT",
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0"
+    "airtap": "~0.1.0",
+    "is-async-supported": "~1.2.0",
+    "run-series": "~1.1.4",
+    "tape": "~4.9.0"
   },
-
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
-  
+  "browser": {
+    "./support/isBuffer.js": "./support/isBufferBrowser.js"
+  }
 }
