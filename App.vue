@@ -1,6 +1,9 @@
 <template>
 <h1>Movie list</h1>
-
+<div class="search">
+<label class="filter">Filter by name or genre</label>
+  <input type="text" v-model="search" placeholder="search name or genre or key words"/>
+</div>
 
 <form @submit.prevent>
  
@@ -16,11 +19,17 @@ v-model="name"
     <select v-model="genre">
 
       <option value="none">none</option>
-            <option value="com">com</option>
-            <option value="hor">hor</option>
-            <option value="dr">dr</option>
+            <option value="com">comedy</option>
+            <option value="hor">horror</option>
+            <option value="dr">drama</option>
+            <option value="family">family</option>
+            <option value="sci-fi">sci-fi</option>
+            <option value="cartoon">cartoon</option>
+            <option value="action">action</option>
         </select>
-     <label for="about">About</label>
+     <label for="about">About
+       
+     </label>
     <input type="text" v-model="about" placholder="write about">
     <label form="year">Year</label>
     <input  type="number" placeholder="year"
@@ -29,17 +38,17 @@ v-model="name"
   <button type="btn" @click="addMovie()">+</button>
 </form>
 
-<table class="table" v-if="items.length">
+<table class="table">
   <thead>
      <tr>
-       
-        <th >
+       <th class="check">Check</th>
+        <th>
           Name</th>
         <th >
           Genre
         </th>
         <th> About 
-
+       <br>key words
         </th>
         <th @click="sortHighest">
             Year <br>sort by year</th>
@@ -49,6 +58,7 @@ v-model="name"
     <tbody >
       <tr v-for="item,index in items"  :key="item.index" :item="item" 
     >
+    <td><input type="checkbox" v-bind:value="item.name" v-model="selected"></td>
         
         <td>  {{ item.name }} </td>
         <td> {{ item.genre }} </td>
@@ -60,20 +70,14 @@ v-model="name"
     </tbody>
     
 </table>
-<label>Filter by name</label>
-  <input type="text" v-model="search" placeholder="search name..."/>
-  <label>Filter by genre</label>
-<input v-model="selected" placeholder="filter by genre"/>
- 
 
-
-
-        
+    <tr>done {{selected}}</tr>
+   <button class="filter" @click="eraseIt()">erase</button>
 </template>
 
 
 <script>
-import { computed } from '@vue/reactivity'
+
 
 
 
@@ -83,13 +87,15 @@ export default {
     return {
       items: [],
       item: {},
-
+selected: "",
 item: { name: this.name, genre: this.genre, year: this.year, about: this.about, },    
      search: '',
  genre: '',
- 
+ about: '',
+  selected: []
     }
-  
+   
+
    
      
   
@@ -98,11 +104,20 @@ item: { name: this.name, genre: this.genre, year: this.year, about: this.about, 
     
   computed: {
     items() {
-     
-      let filter = new RegExp(this.search, 'i')
-      return this.items.filter(item => item.name.match(filter))
+       
+ 
+      return this.items.filter((item) => {
+        
+        return item.genre.toLowerCase().indexOf(this.search.toLowerCase()) >= 0 
+        || 
+        item.name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0
+         || item.about.toLowerCase().indexOf(this.search.toLowerCase()) >= 0
+        });
       
+    
     }
+      
+    
   },
   methods: {
   
@@ -116,11 +131,13 @@ item: { name: this.name, genre: this.genre, year: this.year, about: this.about, 
        genre: this.genre,
        year: this.year,
        about: this.about,
-       time: this.time
+      
      })
 
     this.name = '';
-    this.year = null
+    this.year = null,
+    this.about = '',
+    this.genre = ''
     },
   sortHighest() {
       this.items.sort((a, b) => a.item < b.item ? 1 : -1);
@@ -129,7 +146,11 @@ item: { name: this.name, genre: this.genre, year: this.year, about: this.about, 
 deleteItem(index) {
     this.items.splice(index, 1)
     },
+    eraseIt() {
+      this.selected.length = 0
+    }
   }
+  
 }
  
   
@@ -148,6 +169,9 @@ h1 {
   padding-left: 20px;
   font-size: 30px;
   color: darkcyan;
+}
+.search {
+  margin-left: 20px;
 }
 .count {
   display: flex;
@@ -175,6 +199,13 @@ form {
 th {
   background-color: white;
 }
+.filter {
+  width: 250px;
+  margin-bottom: 20px;
+}
+.check {
+  width: 50px;
+}
 label {
   width: 100%;
   background-color: rgb(49, 49, 109);
@@ -196,6 +227,7 @@ button {
   width: 10%;
   background-color: white;
   margin: 0;
+  
 }
 
 .delete  {
@@ -204,7 +236,7 @@ button {
   margin: 0;
   background-color: transparent;
   color: black;
-  font-size: 30px;
+  font-size: 15px;
   
   width: 100%;
   height: 20px;
